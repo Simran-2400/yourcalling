@@ -8,13 +8,13 @@ UI     : Dark glassmorphism Streamlit
 
 import streamlit as st
 from engine.similarity import (
-    V_get_recommendations,
-    V_get_all_titles,
-    V_get_catalog_stats,
+    get_recommendations,
+    get_all_titles,
+    get_catalog_stats,
 )
 from data.catalog import CATALOG
 
-# ── Page config ───────────────────────────────────────────────────────────────
+# Page config
 st.set_page_config(
     page_title="YourCalling",
     page_icon="✦",
@@ -22,7 +22,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# ── Dark Glassmorphism CSS ────────────────────────────────────────────────────
+# Dark Glassmorphism CSS
 st.markdown("""
 <style>
   /* ── Google Fonts ── */
@@ -406,29 +406,29 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# ── Helper: media icon + color ────────────────────────────────────────────────
-def V_media_icon(S_media: str) -> str:
-    return {"book": "📖", "movie": "🎬", "song": "🎵"}.get(S_media, "✦")
+# Helper: media icon + color
+def media_icon(media: str) -> str:
+    return {"book": "📖", "movie": "🎬", "song": "🎵"}.get(media, "✦")
 
-def V_media_label(S_media: str) -> str:
-    return {"book": "Book", "movie": "Movie", "song": "Song"}.get(S_media, S_media)
+def media_label(media: str) -> str:
+    return {"book": "Book", "movie": "Movie", "song": "Song"}.get(media, media)
 
-def V_lang_label(S_lang: str) -> str:
-    return {"en": "EN", "it": "IT", "hi": "HI"}.get(S_lang, S_lang.upper())
+def lang_label(lang: str) -> str:
+    return {"en": "EN", "it": "IT", "hi": "HI"}.get(lang, lang.upper())
 
-def V_score_color(S_score: float) -> str:
-    if S_score >= 0.55:
+def score_color(score: float) -> str:
+    if score >= 0.55:
         return "linear-gradient(90deg, #a78bfa, #818cf8)"
-    elif S_score >= 0.35:
+    elif score >= 0.35:
         return "linear-gradient(90deg, #60a5fa, #818cf8)"
     else:
         return "linear-gradient(90deg, #34d399, #60a5fa)"
 
-def V_score_pct(S_score: float) -> int:
-    return min(int(S_score * 200), 100)  # scale 0–0.5 → 0–100%
+def score_pct(score: float) -> int:
+    return min(int(score * 200), 100)  # scale 0–0.5 → 0–100%
 
 
-# ── Hero ──────────────────────────────────────────────────────────────────────
+# Hero
 st.markdown("""
 <div class="yc-hero">
   <h1 class="yc-logo">YourCalling</h1>
@@ -437,24 +437,24 @@ st.markdown("""
 <div class="yc-divider"></div>
 """, unsafe_allow_html=True)
 
-# ── Catalog stats ─────────────────────────────────────────────────────────────
-V_stats = V_get_catalog_stats()
+# Catalog stats
+stats = get_catalog_stats()
 st.markdown(f"""
 <div class="stats-row">
   <div class="stat-chip">
-    <span class="stat-num">{V_stats['total']}</span>
+    <span class="stat-num">{stats['total']}</span>
     <span class="stat-label">Total Items</span>
   </div>
   <div class="stat-chip">
-    <span class="stat-num">{V_stats['by_media'].get('book', 0)}</span>
+    <span class="stat-num">{stats['by_media'].get('book', 0)}</span>
     <span class="stat-label">📖 Books</span>
   </div>
   <div class="stat-chip">
-    <span class="stat-num">{V_stats['by_media'].get('movie', 0)}</span>
+    <span class="stat-num">{stats['by_media'].get('movie', 0)}</span>
     <span class="stat-label">🎬 Movies</span>
   </div>
   <div class="stat-chip">
-    <span class="stat-num">{V_stats['by_media'].get('song', 0)}</span>
+    <span class="stat-num">{stats['by_media'].get('song', 0)}</span>
     <span class="stat-label">🎵 Songs</span>
   </div>
   <div class="stat-chip">
@@ -466,72 +466,72 @@ st.markdown(f"""
 
 st.markdown('<div class="yc-divider"></div>', unsafe_allow_html=True)
 
-# ── Main layout ───────────────────────────────────────────────────────────────
-S_col_input, S_col_results = st.columns([1, 1.7], gap="large")
+# Main layout
+col_input, col_results = st.columns([1, 1.7], gap="large")
 
-with S_col_input:
+with col_input:
     st.markdown('<div class="glass-card">', unsafe_allow_html=True)
     st.markdown('<p class="yc-section-label">✦ Search Your Item</p>', unsafe_allow_html=True)
 
     # Build labeled dropdown: "📖 EN · The Great Gatsby"
-    V_media_emoji = {"book": "📖", "movie": "🎬", "song": "🎵"}
-    V_lang_flag   = {"en": "EN", "it": "IT", "hi": "HI"}
-    V_catalog_sorted = sorted(CATALOG, key=lambda V_x: V_x["title"])
-    V_dropdown_labels = [
-        f"{V_media_emoji[V_item['media']]} {V_lang_flag[V_item['lang']]} · {V_item['title']}"
-        for V_item in V_catalog_sorted
+    media_emoji = {"book": "📖", "movie": "🎬", "song": "🎵"}
+    lang_flag   = {"en": "EN", "it": "IT", "hi": "HI"}
+    catalog_sorted = sorted(CATALOG, key=lambda x: x["title"])
+    dropdown_labels = [
+        f"{media_emoji[item['media']]} {lang_flag[item['lang']]} · {item['title']}"
+        for item in catalog_sorted
     ]
-    V_label_to_title = {
-        f"{V_media_emoji[V_item['media']]} {V_lang_flag[V_item['lang']]} · {V_item['title']}": V_item["title"]
-        for V_item in V_catalog_sorted
+    label_to_title = {
+        f"{media_emoji[item['media']]} {lang_flag[item['lang']]} · {item['title']}": item["title"]
+        for item in catalog_sorted
     }
-    S_selected_label = st.selectbox(
+    selected_label = st.selectbox(
         "Select a title from the catalog",
-        options=[""] + V_dropdown_labels,
+        options=[""] + dropdown_labels,
         index=0,
-        key="S_title_select",
+        key="title_select",
         help="📖 = Book · 🎬 = Movie · 🎵 = Song  |  EN / IT / HI = Language"
     )
-    S_selected_title = V_label_to_title.get(S_selected_label, "")
+    selected_title = label_to_title.get(selected_label, "")
 
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown('<p class="yc-section-label">⚙ Filters (optional)</p>', unsafe_allow_html=True)
 
-    S_lang_options = st.multiselect(
+    lang_options = st.multiselect(
         "Languages",
         options=["English (en)", "Italian (it)", "Hindi (hi)"],
         default=[],
-        key="S_lang_filter"
+        key="lang_filter"
     )
-    S_lang_map = {
+    lang_map = {
         "English (en)": "en",
         "Italian (it)": "it",
         "Hindi (hi)": "hi",
     }
-    S_lang_filter = [S_lang_map[V_l] for V_l in S_lang_options] if S_lang_options else None
+    lang_filter = [lang_map[l] for l in lang_options] if lang_options else None
 
-    S_media_options = st.multiselect(
+    media_options = st.multiselect(
         "Media types",
         options=["Books", "Movies", "Songs"],
         default=[],
-        key="S_media_filter"
+        key="media_filter"
     )
-    S_media_map = {"Books": "book", "Movies": "movie", "Songs": "song"}
-    S_media_filter = [S_media_map[V_m] for V_m in S_media_options] if S_media_options else None
+    media_map = {"Books": "book", "Movies": "movie", "Songs": "song"}
+    media_filter = [media_map[m] for m in media_options] if media_options else None
 
-    S_n_results = st.slider(
+    n_results = st.slider(
         "Number of recommendations",
         min_value=3,
         max_value=8,
         value=4,
-        key="S_n_results"
+        key="n_results"
     )
 
     st.markdown("<br>", unsafe_allow_html=True)
-    S_go = st.button("✦  Find My Calling", key="S_go_btn")
+    go = st.button("✦  Find My Calling", key="go_btn")
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # ── About / How it works ─────────────────────────────────────────────────
+    # About / How it works
     with st.expander("ℹ How YourCalling works"):
         st.markdown("""
         **YourCalling** uses a pure tag-based similarity engine.  
@@ -548,19 +548,19 @@ with S_col_input:
         """)
 
 
-with S_col_results:
+with col_results:
     st.markdown('<p class="yc-section-label">✦ Recommendations</p>', unsafe_allow_html=True)
 
-    if S_go and S_selected_title and S_selected_title.strip():
-        V_result = V_get_recommendations(
-            S_input_title=S_selected_title,
-            S_n_results=S_n_results,
-            S_lang_filter=S_lang_filter,
-            S_media_filter=S_media_filter,
-            S_ensure_cross_media=True,
+    if go and selected_title and selected_title.strip():
+        result = get_recommendations(
+            input_title=selected_title,
+            n_results=n_results,
+            lang_filter=lang_filter,
+            media_filter=media_filter,
+            ensure_cross_media=True,
         )
 
-        if V_result["not_found"]:
+        if result["not_found"]:
             st.markdown("""
             <div class="not-found">
               <span>🔍</span>
@@ -569,40 +569,40 @@ with S_col_results:
             """, unsafe_allow_html=True)
 
         else:
-            V_input = V_result["input_item"]
-            V_recs  = V_result["recommendations"]
+            input = result["input_item"]
+            recs  = result["recommendations"]
 
-            # ── Input item display ────────────────────────────────────────────
-            V_input_icon = V_media_icon(V_input["media"])
+            # Input item display
+            input_icon = media_icon(input["media"])
             st.markdown(f"""
             <div class="yc-query-card">
-              <span class="yc-query-icon">{V_input_icon}</span>
+              <span class="yc-query-icon">{input_icon}</span>
               <div class="yc-query-meta">
-                <p class="yc-query-title">{V_input["title"]}</p>
+                <p class="yc-query-title">{input["title"]}</p>
                 <p class="yc-query-sub">
-                  {V_input["creator"]} &nbsp;·&nbsp;
-                  {V_media_label(V_input["media"])} &nbsp;·&nbsp;
-                  {V_lang_label(V_input["lang"])}
+                  {input["creator"]} &nbsp;·&nbsp;
+                  {media_label(input["media"])} &nbsp;·&nbsp;
+                  {lang_label(input["lang"])}
                 </p>
               </div>
             </div>
             """, unsafe_allow_html=True)
 
-            # ── Show input tags ───────────────────────────────────────────────
-            V_input_tags_html = "".join(
-                f'<span class="tag-pill">{V_t}</span>'
-                for V_t in V_input["tags"][:10]
+            # Show input tags
+            input_tags_html = "".join(
+                f'<span class="tag-pill">{t}</span>'
+                for t in input["tags"][:10]
             )
             st.markdown(f"""
             <div style="margin-bottom:1.2rem;">
               <p style="font-size:0.70rem;color:var(--text-muted);letter-spacing:0.1em;
                         text-transform:uppercase;margin-bottom:0.4rem;">Emotional tags</p>
-              <div class="tags-row">{V_input_tags_html}</div>
+              <div class="tags-row">{input_tags_html}</div>
             </div>
             """, unsafe_allow_html=True)
 
-            # ── Recommendation cards ──────────────────────────────────────────
-            if not V_recs:
+            # Recommendation cards
+            if not recs:
                 st.markdown("""
                 <div class="not-found">
                   <span>😶</span>
@@ -610,68 +610,68 @@ with S_col_results:
                 </div>
                 """, unsafe_allow_html=True)
             else:
-                for V_idx, V_entry in enumerate(V_recs, 1):
-                    V_item   = V_entry["item"]
-                    V_score  = V_entry["score"]
-                    V_shared = V_entry["shared_tags"]
+                for idx, entry in enumerate(recs, 1):
+                    item   = entry["item"]
+                    score  = entry["score"]
+                    shared = entry["shared_tags"]
 
-                    V_icon       = V_media_icon(V_item["media"])
-                    V_media_type = V_item["media"]
-                    V_bar_color  = V_score_color(V_score)
-                    V_bar_width  = V_score_pct(V_score)
+                    icon       = media_icon(item["media"])
+                    media_type = item["media"]
+                    bar_color  = score_color(score)
+                    bar_width  = score_pct(score)
 
                     # Shared tags (first 6)
-                    V_shared_html = "".join(
-                        f'<span class="tag-pill shared">{V_t}</span>'
-                        for V_t in V_shared[:6]
+                    shared_html = "".join(
+                        f'<span class="tag-pill shared">{t}</span>'
+                        for t in shared[:6]
                     )
-                    V_other_tags = [V_t for V_t in V_item["tags"] if V_t not in V_shared]
-                    V_other_html = "".join(
-                        f'<span class="tag-pill">{V_t}</span>'
-                        for V_t in V_other_tags[:4]
+                    other_tags = [t for t in item["tags"] if t not in shared]
+                    other_html = "".join(
+                        f'<span class="tag-pill">{t}</span>'
+                        for t in other_tags[:4]
                     )
 
                     st.markdown(f"""
-                    <div class="rec-card type-{V_media_type}">
+                    <div class="rec-card type-{media_type}">
                       <div class="rec-header">
                         <div style="display:flex;align-items:center;gap:0.5rem;">
-                          <span style="font-size:1.5rem;">{V_icon}</span>
+                          <span style="font-size:1.5rem;">{icon}</span>
                           <div>
-                            <p class="rec-title">#{V_idx} {V_item["title"]}</p>
-                            <p class="rec-creator">{V_item["creator"]}</p>
+                            <p class="rec-title">#{idx} {item["title"]}</p>
+                            <p class="rec-creator">{item["creator"]}</p>
                           </div>
                         </div>
                         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.3rem;">
-                          <span class="rec-media-badge badge-{V_media_type}">
-                            {V_media_label(V_media_type)}
+                          <span class="rec-media-badge badge-{media_type}">
+                            {media_label(media_type)}
                           </span>
-                          <span class="rec-lang-badge">{V_lang_label(V_item["lang"])}</span>
+                          <span class="rec-lang-badge">{lang_label(item["lang"])}</span>
                         </div>
                       </div>
 
                       <div class="score-container">
                         <div class="score-label">
                           <span>Emotional Match</span>
-                          <span style="color:var(--accent);font-weight:600;">{int(V_score * 200)}%</span>
+                          <span style="color:var(--accent);font-weight:600;">{int(score * 200)}%</span>
                         </div>
                         <div class="score-bar-track">
                           <div class="score-bar-fill"
-                               style="width:{V_bar_width}%;background:{V_bar_color};"></div>
+                               style="width:{bar_width}%;background:{bar_color};"></div>
                         </div>
                       </div>
 
                       <div class="tags-row">
-                        {V_shared_html}
-                        {V_other_html}
+                        {shared_html}
+                        {other_html}
                       </div>
                       <p style="font-size:0.65rem;color:var(--text-muted);
                                 margin-top:0.4rem;letter-spacing:0.05em;">
-                        ✦ {len(V_shared)} shared emotional tags
+                        ✦ {len(shared)} shared emotional tags
                       </p>
                     </div>
                     """, unsafe_allow_html=True)
 
-    elif S_go and not S_selected_title:
+    elif go and not selected_title:
         st.markdown("""
         <div class="not-found">
           <span>👆</span>
@@ -679,7 +679,7 @@ with S_col_results:
         </div>
         """, unsafe_allow_html=True)
     else:
-        # ── Idle state ───────────────────────────────────────────────────────
+        # Idle state
         st.markdown("""
         <div class="glass-card" style="text-align:center;padding:3rem 1.5rem;">
           <p style="font-size:2.5rem;margin:0;">✦</p>
@@ -708,7 +708,7 @@ with S_col_results:
         </div>
         """, unsafe_allow_html=True)
 
-# ── Footer ────────────────────────────────────────────────────────────────────
+# Footer
 st.markdown("""
 <div class="yc-footer">
   YourCalling · Simran Vishnoi · University of Parma · Data Science for Management<br>

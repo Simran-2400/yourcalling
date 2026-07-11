@@ -1,69 +1,30 @@
-# YourCalling 🎵📖🎬
-**Cross-Media Recommendation Engine**  
-Simran Vishnoi · University of Parma · Data Science for Management
+# YourCalling
 
----
+A cross-media recommendation engine: give it a book, movie or song you love and it suggests things to read, watch and listen to that share the same emotional feel. Built with Streamlit, no external APIs.
 
-## What it does
-Input any **book, movie, or song** from the 400-item catalog and receive 3–4 recommendations **across all three media** based on **emotional essence, mood, and theme matching** — not genre or plot.
+Most recommenders stay inside one medium (Spotify suggests songs, Goodreads suggests books). The idea here is that what people actually chase is a mood, and moods cross media. If you loved *Norwegian Wood*, you might want a melancholic film, not another Murakami novel.
 
-## Catalog
-| Media | Language | Count |
-|-------|----------|-------|
-| Books | English | 130 |
-| Movies | English | 70 |
-| Movies | Italian | 35 |
-| Movies | Hindi | 35 |
-| Songs | English | 55 |
-| Songs | Italian | 35 |
-| Songs | Hindi | 40 |
-| **Total** | | **400** |
+## How it works
 
-## Algorithm
-Pure tag-based Jaccard similarity. No APIs required.
-- **60%** — Jaccard tag overlap (all tags)
-- **35%** — Emotional anchor alignment (mood-specific tags)
-- **5%** — Cross-media diversity bonus
+Every item in the catalog (`data/catalog.py`) is hand-tagged with themes, moods and style tags. The engine (`engine/similarity.py`) scores similarity as:
 
----
+- 60% Jaccard overlap of all tags
+- 35% overlap of "emotional anchor" tags (melancholic, hopeful, haunting, etc.)
+- a small bonus when the recommendation is a different media type, so results stay cross-media
 
-## Setup on Mac
+Scores are transparent: the UI shows which shared tags drove each recommendation.
+
+## Run it
 
 ```bash
-# 1. Navigate to project folder (drag folder into Terminal or:)
-cd ~/Desktop/yourcalling    # adjust path as needed
-
-# 2. Create virtual environment
-python3 -m venv venv
-source venv/bin/activate
-
-# 3. Install dependencies
 pip install -r requirements.txt
-
-# 4. Run the app
 streamlit run app.py
 ```
 
-The app opens automatically at **http://localhost:8501**
+## Limitations
 
----
+The catalog is small and hand-curated, so coverage is limited, and tag-based matching only works as well as the tagging. This was mainly an exercise in building a recommender without embeddings or APIs and keeping the scoring explainable.
 
-## Project Structure
-```
-yourcalling/
-├── app.py                  ← Main Streamlit app (dark glassmorphism UI)
-├── requirements.txt
-├── README.md
-├── data/
-│   ├── __init__.py
-│   └── catalog.py          ← 400-item catalog with emotional tags
-└── engine/
-    ├── __init__.py
-    └── similarity.py       ← Jaccard similarity + weighted scoring engine
-```
+## Author
 
----
-
-## Variable naming convention
-- `S_` prefix → input variables
-- `V_` prefix → computed/derived variables
+Simran Vishnoi — MSc Data Science for Management, University of Parma

@@ -4,7 +4,7 @@
 
 CATALOG = [
 
-    # ── ENGLISH BOOKS (130) ──────────────────────────────────────────────────
+    # ENGLISH BOOKS (130)
 
     {"id": "b001", "title": "The Great Gatsby", "creator": "F. Scott Fitzgerald", "media": "book", "lang": "en",
      "tags": ["longing", "obsession", "nostalgia", "illusion", "tragedy", "wealth", "decay", "romantic", "melancholic", "loss"]},
@@ -396,7 +396,7 @@ CATALOG = [
     {"id": "b130", "title": "Tuesdays with Morrie", "creator": "Mitch Albom", "media": "book", "lang": "en",
      "tags": ["wisdom", "death", "love", "bittersweet", "friendship", "hopeful", "touching", "grief", "meaning", "philosophical"]},
 
-    # ── ENGLISH MOVIES (70) ──────────────────────────────────────────────────
+    # ENGLISH MOVIES (70)
 
     {"id": "m001", "title": "The Shawshank Redemption", "creator": "Frank Darabont", "media": "movie", "lang": "en",
      "tags": ["hope", "friendship", "resilience", "dark", "redemption", "triumph", "prison", "inspiring", "bittersweet", "justice"]},
@@ -608,7 +608,7 @@ CATALOG = [
     {"id": "m070", "title": "Cloud Atlas", "creator": "Wachowski Sisters", "media": "movie", "lang": "en",
      "tags": ["epic", "love", "philosophical", "dark", "reincarnation", "hope", "complex", "interconnected", "wonder", "sacrifice"]},
 
-    # ── ITALIAN MOVIES (35) ──────────────────────────────────────────────────
+    # ITALIAN MOVIES (35)
 
     {"id": "mi001", "title": "La Vita è Bella", "creator": "Roberto Benigni", "media": "movie", "lang": "it",
      "tags": ["love", "dark", "hope", "Holocaust", "bittersweet", "family", "humor", "tragic", "father-son", "beautiful"]},
@@ -715,7 +715,7 @@ CATALOG = [
     {"id": "mi035", "title": "Ariaferma", "creator": "Leonardo Di Costanzo", "media": "movie", "lang": "it",
      "tags": ["dark", "prison", "Italy", "tension", "quiet", "humanity", "complex", "slow", "bittersweet", "social"]},
 
-    # ── HINDI MOVIES (35) ────────────────────────────────────────────────────
+    # HINDI MOVIES (35)
 
     {"id": "mh001", "title": "Mughal-E-Azam", "creator": "K. Asif", "media": "movie", "lang": "hi",
      "tags": ["epic", "love", "sacrifice", "historical", "dark", "power", "tragic", "passionate", "grand", "Mughal"]},
@@ -822,7 +822,7 @@ CATALOG = [
     {"id": "mh035", "title": "Lootera", "creator": "Vikramaditya Motwane", "media": "movie", "lang": "hi",
      "tags": ["love", "dark", "bittersweet", "India", "historical", "melancholic", "beautiful", "loss", "longing", "quiet"]},
 
-    # ── ENGLISH SONGS (55) ───────────────────────────────────────────────────
+    # ENGLISH SONGS (55)
 
     {"id": "s001", "title": "Bohemian Rhapsody", "creator": "Queen", "media": "song", "lang": "en",
      "tags": ["epic", "dark", "identity", "theatrical", "iconic", "emotional", "complex", "rebellious", "dramatic", "powerful"]},
@@ -989,7 +989,7 @@ CATALOG = [
     {"id": "s055", "title": "The Bones", "creator": "Maren Morris", "media": "song", "lang": "en",
      "tags": ["love", "resilience", "hopeful", "beautiful", "bittersweet", "commitment", "gentle", "country", "trust", "foundation"]},
 
-    # ── ITALIAN SONGS (35) ───────────────────────────────────────────────────
+    # ITALIAN SONGS (35)
 
     {"id": "si001", "title": "Azzurro", "creator": "Adriano Celentano", "media": "song", "lang": "it",
      "tags": ["longing", "summer", "bittersweet", "love", "nostalgia", "joyful", "light", "beautiful", "Italy", "yearning"]},
@@ -1096,7 +1096,7 @@ CATALOG = [
     {"id": "si035", "title": "Vivo per lei", "creator": "Andrea Bocelli", "media": "song", "lang": "it",
      "tags": ["love", "music", "beautiful", "Italy", "passionate", "powerful", "hopeful", "bittersweet", "art", "devotion"]},
 
-    # ── HINDI SONGS (40) ─────────────────────────────────────────────────────
+    # HINDI SONGS (40)
 
     {"id": "sh001", "title": "Tum Hi Ho", "creator": "Arijit Singh", "media": "song", "lang": "hi",
      "tags": ["love", "longing", "bittersweet", "beautiful", "melancholic", "devotion", "India", "romantic", "yearning", "dark"]},
@@ -1219,7 +1219,7 @@ CATALOG = [
      "tags": ["rebellious", "dark", "India", "freedom", "psychedelic", "bittersweet", "cultural", "iconic", "edgy", "searching"]},
 ]
 
-# ── Tag taxonomy for reference ──────────────────────────────────────────────
+# Tag taxonomy for reference
 ALL_TAGS = sorted(set(tag for item in CATALOG for tag in item["tags"]))
 MEDIA_TYPES = ["book", "movie", "song"]
 LANGUAGES = ["en", "it", "hi"]
